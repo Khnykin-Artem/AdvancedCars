@@ -1,18 +1,14 @@
 import { Component, HostListener } from '@angular/core';
-import {FormBuilder, Validators} from '@angular/forms';
-import {AppService} from './app.service';
+import { FormBuilder, Validators } from '@angular/forms';
+import { AppService } from './app.service';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.css'],
 })
-
 export class AppComponent {
-
-    constructor(private fb: FormBuilder, private appService: AppService) {};
-
-
+    constructor(private fb: FormBuilder, private appService: AppService) {}
 
     priceForm = this.fb.group({
         name: ['', Validators.required],
@@ -20,55 +16,60 @@ export class AppComponent {
         car: ['', Validators.required],
     });
     onSubmit() {
-         if(this.priceForm.valid) {
-             this.appService.sendQuery(this.priceForm.value)
-                 .subscribe({
-                     next: (response: any) => {
-                         alert(response.message);
-                         this.priceForm.reset();
-                     },
-                     error: (response: any) => {
-                         alert(response.error.message);
-                     }
-                 });
-         }
-    };
+        if (this.priceForm.valid) {
+            this.appService.sendQuery(this.priceForm.value).subscribe({
+                next: (response: any) => {
+                    alert(response.message);
+                    this.priceForm.reset();
+                },
+                error: (response: any) => {
+                    alert(response.error.message);
+                },
+            });
+        }
+    }
 
     trans: any;
     @HostListener('document:mousemove', ['$event'])
     onMouseMove(e: MouseEvent) {
         this.trans = {
-            transform: ('translate3d(' + ((e.clientX * 0.6) / 8) + 'px,' + ((e.clientY * 0.6) / 8) + 'px, 0px')
+            transform:
+                'translate3d(' +
+                (e.clientX * 0.6) / 8 +
+                'px,' +
+                (e.clientY * 0.6) / 8 +
+                'px, 0px',
         };
-    };
+    }
 
     bgPos: any;
     @HostListener('document:scroll', ['$event'])
     onScroll() {
         this.bgPos = {
-            backgroundPositionX: ('0' + (0.3 * window.scrollY) + 'px')
+            backgroundPositionX: '0' + 0.3 * window.scrollY + 'px',
         };
-    };
+    }
 
     category: string = 'sport';
     toggleCategory(category: string) {
         this.category = category;
         this.ngOnInit();
-    };
+    }
 
     goScroll(target: HTMLElement, car?: any) {
-        target.scrollIntoView({behavior: "smooth"});
+        target.scrollIntoView({ behavior: 'smooth' });
 
-        if(car) {
+        if (car) {
             this.priceForm.patchValue({
-                car: car.name
+                car: car.name,
             });
         }
-    };
+    }
 
     carsData: any;
     ngOnInit() {
-        this.appService.getData(this.category)
-            .subscribe(carsData => this.carsData = carsData);
-    };
+        this.appService
+            .getData(this.category)
+            .subscribe((carsData) => (this.carsData = carsData));
+    }
 }
